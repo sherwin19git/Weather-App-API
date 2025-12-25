@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Weather App</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Falling Snowflakes -->
+  <div class="snowflakes-container">
+    <div class="snowflake" style="--delay: 0s; --duration: 8s; --left: 10%;">❄️</div>
+    <div class="snowflake" style="--delay: 1s; --duration: 10s; --left: 20%;">❄️</div>
+    <div class="snowflake" style="--delay: 2s; --duration: 9s; --left: 30%;">❄️</div>
+    <div class="snowflake" style="--delay: 0.5s; --duration: 11s; --left: 40%;">❄️</div>
+    <div class="snowflake" style="--delay: 1.5s; --duration: 8.5s; --left: 50%;">❄️</div>
+    <div class="snowflake" style="--delay: 3s; --duration: 10s; --left: 60%;">❄️</div>
+    <div class="snowflake" style="--delay: 0.2s; --duration: 9.5s; --left: 70%;">❄️</div>
+    <div class="snowflake" style="--delay: 2.5s; --duration: 11.5s; --left: 80%;">❄️</div>
+    <div class="snowflake" style="--delay: 1.8s; --duration: 10.5s; --left: 90%;">❄️</div>
+    <div class="snowflake" style="--delay: 2.2s; --duration: 9s; --left: 15%;">❄️</div>
+    <div class="snowflake" style="--delay: 0.8s; --duration: 10.5s; --left: 45%;">❄️</div>
+    <div class="snowflake" style="--delay: 3.2s; --duration: 8.8s; --left: 75%;">❄️</div>
+    <div class="snowflake" style="--delay: 1.2s; --duration: 11s; --left: 25%;">❄️</div>
+    <div class="snowflake" style="--delay: 2.8s; --duration: 9.5s; --left: 55%;">❄️</div>
+    <div class="snowflake" style="--delay: 0.3s; --duration: 10.2s; --left: 85%;">❄️</div>
+  </div>
+
+  <!-- Main Container -->
+  <div class="container">
+    <!-- Header Section -->
+    <header class="header">
+      <h1>🌤️ Weather App</h1>
+      <button id="themeToggle" class="theme-toggle" aria-label="Toggle Dark Mode">
+        🌙
+      </button>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <!-- Search Section -->
+      <section class="search-section">
+        <div class="search-container">
+          <input
+            type="text"
+            id="cityInput"
+            class="search-input"
+            placeholder="Enter city name..."
+            autocomplete="off"
+          />
+          <button id="searchBtn" class="search-btn">Search</button>
+        </div>
+        <div id="loadingMessage" class="loading-hidden">
+          <div class="spinner"></div>
+          <p>Loading weather data...</p>
+        </div>
+      </section>
+
+      <!-- Error Container -->
+      <div id="errorContainer" class="error-container error-hidden"></div>
+
+      <!-- Weather Results Container -->
+      <section id="resultsContainer" class="results-container hidden">
+        <!-- Current Weather Card -->
+        <article class="weather-card current-weather">
+          <div class="weather-header">
+            <h2 id="cityName" class="city-name"></h2>
+            <p id="weatherDate" class="weather-date"></p>
+          </div>
+
+          <div class="weather-main">
+            <div class="temperature-section">
+              <div class="temp-display">
+                <span id="temperature" class="temperature"></span>
+                <span class="temp-unit">°C</span>
+              </div>
+              <div class="weather-icon">
+                <img id="weatherIcon" src="" alt="Weather icon" />
+              </div>
+            </div>
+
+            <div class="weather-description">
+              <p id="weatherDesc" class="description"></p>
+              <p id="feelsLike" class="feels-like"></p>
+            </div>
+          </div>
+
+          <!-- Weather Details Grid -->
+          <div class="weather-details-grid">
+            <div class="detail-item">
+              <span class="detail-label">💨 Wind Speed</span>
+              <span id="windSpeed" class="detail-value"></span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">💧 Humidity</span>
+              <span id="humidity" class="detail-value"></span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">🌡️ Pressure</span>
+              <span id="pressure" class="detail-value"></span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">👁️ Visibility</span>
+              <span id="visibility" class="detail-value"></span>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <!-- Favorites Section -->
+      <section id="favoritesSection" class="favorites-section hidden">
+        <h3>⭐ Favorite Cities</h3>
+        <div id="favoritesList" class="favorites-list"></div>
+        <button id="clearFavorites" class="clear-btn">Clear Favorites</button>
+      </section>
+    </main>
+  </div>
+
+  <!-- Scripts -->
+  <script src="config.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
