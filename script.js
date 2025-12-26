@@ -162,7 +162,8 @@ function displayWeather(weatherData) {
     weather: [{ main, description, icon }],
     wind: { speed },
     visibility,
-    dt
+    dt,
+    coord: { lat, lon }
   } = weatherData;
 
   // Update temperature and main weather info
@@ -186,6 +187,9 @@ function displayWeather(weatherData) {
   // Show results container
   document.getElementById('resultsContainer').classList.remove('hidden');
 
+  // Fetch and display 5-day forecast
+  fetchAndDisplayForecast(lat, lon);
+
   // Add to favorites for quick access
   addToFavorites(name, temp);
 }
@@ -195,6 +199,94 @@ function displayWeather(weatherData) {
  */
 function clearWeatherDisplay() {
   document.getElementById('resultsContainer').classList.add('hidden');
+}
+
+/**
+ * Fetches forecast data and displays 5-day forecast
+ * @param {number} lat - Latitude coordinate
+ * @param {number} lon - Longitude coordinate
+ */
+async function fetchAndDisplayForecast(lat, lon) {
+  try {
+    const forecastData = await fetchWeatherForecast(lat, lon);
+    displayForecast(forecastData);
+  } catch (error) {
+    console.error('Error fetching forecast:', error);
+    // Silently fail - forecast is optional
+  }
+}
+
+/**
+ * Displays 5-day forecast in the DOM
+ * Groups forecast data by day and shows max/min temperatures
+ * @param {Object} forecastData - Forecast data from API
+ */
+function displayForecast(forecastData) {
+  const { list } = forecastData;
+  const forecastByDay = {};
+
+  // Group forecast data by day
+  list.forEach((item) => {
+    const date = new Date(item.dt * 1000);
+    const day = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    const dayName = date.toLocaleDateString('en-US', { weekday: 'short' });
+
+    if (!forecastByDay[day]) {
+      forecastByDay[day] = {
+        dayName,
+        temps: [],
+        icons: [],
+        descriptions: [],
+        day
+      };
+    }
+
+    forecastByDay[day].temps.push(item.main.temp);
+    forecastByDay[day].icons.push(item.weather[0].icon);
+    forecastByDay[day].descriptions.push(item.weather[0].main);
+  });
+
+  // Get next 5 days (skip today if already passed most of the day)
+  const forecastDays = Object.values(forecastByDay).slice(1, 6);
+
+  const forecastContainer = document.getElementById('forecastContainer');
+  forecastContainer.innerHTML = '';
+
+  // Create forecast card for each day
+  forecastDays.forEach((dayData) => {
+    const maxTemp = Math.round(Math.max(...dayData.temps));
+    const minTemp = Math.round(Math.min(...dayData.temps));
+    const avgTemp = Math.round(dayData.temps.reduce((a, b) => a + b) / dayData.temps.length);
+    
+    // Use most common icon (last one in the list is typically evening/representative)
+    const icon = dayData.icons[Math.floor(dayData.icons.length / 2)] || dayData.icons[0];
+    const iconUrl = `https://openweathermap.org/img/wn/${icon}@2x.png`;
+
+    const forecastCard = document.createElement('div');
+    forecastCard.className = 'forecast-card';
+
+    forecastCard.innerHTML = `
+      <div class="forecast-date">${dayData.day}</div>
+      <div class="forecast-day">${dayData.dayName}</div>
+      <img src="${iconUrl}" alt="${dayData.descriptions[0]}" class="forecast-icon" />
+      <div class="forecast-description">${dayData.descriptions[0]}</div>
+      <div class="forecast-temps">
+        <div class="forecast-temp-item">
+          <span class="temp-label">Max:</span>
+          <span class="temp-value">${maxTemp}°C</span>
+        </div>
+        <div class="forecast-temp-item">
+          <span class="temp-label">Min:</span>
+          <span class="temp-value">${minTemp}°C</span>
+        </div>
+      </div>
+    `;
+
+    forecastContainer.appendChild(forecastCard);
+  });
+
+  // Show forecast section
+  document.getElementById('forecastSection').classList.remove('hidden');
 }
 
 /**
